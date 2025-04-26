@@ -1,0 +1,31 @@
+2025-04-26T22:37:13.355Z error: uncaughtException: Cannot find module './routes'
+Require stack:
+- /project/sandbox/user-workspace/backend/src/app.js
+- /project/sandbox/user-workspace/backend/src/appStart.js
+Error: Cannot find module './routes'
+Require stack:
+- /project/sandbox/user-workspace/backend/src/app.js
+- /project/sandbox/user-workspace/backend/src/appStart.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1143:15)
+    at Module._load (node:internal/modules/cjs/loader:984:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:179:18)
+    at Object.<anonymous> (/project/sandbox/user-workspace/backend/src/app.js:8:19)
+    at Module._compile (node:internal/modules/cjs/loader:1369:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1427:10)
+    at Module.load (node:internal/modules/cjs/loader:1206:32)
+    at Module._load (node:internal/modules/cjs/loader:1022:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19) Error: Cannot find module './routes'
+Require stack:
+- /project/sandbox/user-workspace/backend/src/app.js
+- /project/sandbox/user-workspace/backend/src/appStart.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1143:15)
+    at Module._load (node:internal/modules/cjs/loader:984:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:179:18)
+    at Object.<anonymous> (/project/sandbox/user-workspace/backend/src/app.js:8:19)
+    at Module._compile (node:internal/modules/cjs/loader:1369:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1427:10)
+    at Module.load (node:internal/modules/cjs/loader:1206:32)
+    at Module._load (node:internal/modules/cjs/loader:1022:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
