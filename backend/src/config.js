@@ -25,11 +25,46 @@ const config = {
 };
 
 // Validate required environment variables
-const requiredEnvVars = ['JWT_SECRET', 'MONGODB_URI'];
-for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) {
-    throw new Error(`Missing required environment variable: ${envVar}`);
-  }
-}
+const requiredEnvVars = [
+  'JWT_SECRET',
+  'JWT_REFRESH_SECRET',
+  'SESSION_SECRET',
+  'ENCRYPTION_KEY',
+  'MONGODB_URI',
+  'PORT'
+];
 
-module.exports = config;
+requiredEnvVars.forEach(envVar => {
+  if (!process.env[envVar]) {
+    if (envVar === 'JWT_SECRET') {
+      process.env[envVar] = 'default_jwt_secret_for_testing_only';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else if (envVar === 'JWT_REFRESH_SECRET') {
+      process.env[envVar] = 'default_jwt_refresh_secret_for_testing_only';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else if (envVar === 'SESSION_SECRET') {
+      process.env[envVar] = 'default_session_secret_for_testing_only';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else if (envVar === 'ENCRYPTION_KEY') {
+      process.env[envVar] = 'default_encryption_key_for_testing_only';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else if (envVar === 'MONGODB_URI') {
+      process.env[envVar] = 'mongodb://localhost:27017/whatsapp-financial-bot';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else if (envVar === 'PORT') {
+      process.env[envVar] = '3000';
+      console.warn(`Warning: Environment variable ${envVar} not set. Using default for testing.`);
+    } else {
+      throw new Error(`Missing required environment variable: ${envVar}`);
+    }
+  }
+});
+
+module.exports = {
+  jwtSecret: process.env.JWT_SECRET,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+  sessionSecret: process.env.SESSION_SECRET,
+  encryptionKey: process.env.ENCRYPTION_KEY,
+  mongoUri: process.env.MONGODB_URI,
+  port: process.env.PORT || 3000
+};
