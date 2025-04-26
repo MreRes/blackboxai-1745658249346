@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Line, Doughnut } from 'react-chartjs-2';
+import Chatbot from '../components/Chatbot';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -101,6 +102,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
+      <Chatbot />
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
@@ -175,7 +177,7 @@ const Dashboard = () => {
         <div className="border-t border-gray-200">
           <ul role="list" className="divide-y divide-gray-200">
             {dashboardData.recentTransactions.map((transaction) => (
-              <li key={transaction._id} className="px-6 py-4">
+              <li key={transaction._id} className="px-6 py-4 sm:px-6">
                 <div className="flex items-center space-x-4">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
