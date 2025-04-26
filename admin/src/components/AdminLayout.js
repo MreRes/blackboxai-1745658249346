@@ -150,4 +150,65 @@ const AdminLayout = () => {
 
             <Link
               to="/admin/settings"
-              className={`flex
+              className={`flex px-4 py-2 text-sm font-medium rounded-md ${
+                isActive('/admin/settings')
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/settings') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </Link>
+          </nav>
+
+          <div className="flex-shrink-0 p-4 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50"
+            >
+              <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile sidebar overlay */}
+      {!isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setIsSidebarOpen(true)}
+        />
+      )}
+
+      {/* Main content */}
+      <div className={`lg:pl-64 flex flex-col flex-1 min-h-screen`}>
+        {/* Mobile header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 lg:hidden">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-1 text-gray-500 rounded-md hover:bg-gray-100"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 className="text-lg font-semibold text-gray-800">Admin Panel</h1>
+          <div className="w-6"></div> {/* Spacer for centering */}
+        </div>
+
+        {/* Page content */}
+        <main className="flex-1 p-4">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default AdminLayout;
