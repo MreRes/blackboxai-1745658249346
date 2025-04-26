@@ -1,41 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import QRCode from 'qrcode.react';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [whatsappStatus, setWhatsappStatus] = useState('disconnected');
-  const [qrCode, setQrCode] = useState(null);
-  const [showQR, setShowQR] = useState(false);
+  const [botStatus, setBotStatus] = useState('disconnected');
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    checkWhatsAppStatus();
-    // Set up WebSocket connection for real-time status updates
-    const ws = new WebSocket('ws://localhost:8000/ws/whatsapp-status');
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'status') {
-        setWhatsappStatus(data.status);
-      } else if (data.type === 'qr') {
-        setQrCode(data.qr);
-      }
-    };
-
-    return () => {
-      ws.close();
-    };
+    fetchBotStatus();
+    fetchNotifications();
+    const interval = setInterval(fetchBotStatus, 30000); // Check bot status every 30 seconds
+    return () => clearInterval(interval);
   }, []);
 
-  const checkWhatsAppStatus = async () => {
+  const fetchBotStatus = async () => {
     try {
-      const response = await axios.get('/api/admin/whatsapp/status');
-      setWhatsappStatus(response.data.status);
-    } catch (error) {
-      console.error('Error checking WhatsApp status:', error);
+      const response = await axios.get('/api/admin/bot/status');
+      setBotStatus(response.data.status);
+    } catch (err) {
+      console.error('Error fetching bot status:', err);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('/api/admin/notifications');
+      setNotifications(response.data);
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
     }
   };
 
@@ -91,150 +86,68 @@ const AdminLayout = () => {
               <svg className={`mr-3 h-6 w-6 ${isActive('/admin/users') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              Manajemen User
+              Users
             </Link>
 
             <Link
-              to="/admin/transactions"
+              to="/admin/goals"
               className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
-                isActive('/admin/transactions')
+                isActive('/admin/goals')
                   ? 'bg-indigo-100 text-indigo-700'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
-              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/transactions') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/goals') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              Transaksi
+              Goals
+            </Link>
+
+            <Link
+              to="/admin/education"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
+                isActive('/admin/education')
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/education') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              Education
+            </Link>
+
+            <Link
+              to="/admin/insights"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
+                isActive('/admin/insights')
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/insights') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Insights
+            </Link>
+
+            <Link
+              to="/admin/bot"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
+                isActive('/admin/bot')
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/bot') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              Bot Management
+              <span className={`ml-2 inline-flex h-2 w-2 rounded-full ${
+                botStatus === 'connected' ? 'bg-green-400' : 'bg-red-400'
+              }`}></span>
             </Link>
 
             <Link
               to="/admin/settings"
-              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
-                isActive('/admin/settings')
-                  ? 'bg-indigo-100 text-indigo-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              <svg className={`mr-3 h-6 w-6 ${isActive('/admin/settings') ? 'text-indigo-700' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Pengaturan
-            </Link>
-          </nav>
-
-          {/* WhatsApp Status */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Status WhatsApp</span>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                whatsappStatus === 'connected' 
-                  ? 'bg-green-100 text-green-800'
-                  : whatsappStatus === 'connecting'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {whatsappStatus === 'connected' 
-                  ? 'Terhubung'
-                  : whatsappStatus === 'connecting'
-                  ? 'Menghubungkan'
-                  : 'Terputus'
-                }
-              </span>
-            </div>
-            {whatsappStatus !== 'connected' && (
-              <button
-                onClick={() => setShowQR(true)}
-                className="w-full px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-              >
-                Scan QR Code
-              </button>
-            )}
-          </div>
-
-          <div className="flex-shrink-0 p-4 border-t border-gray-200">
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full px-4 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50"
-            >
-              <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Keluar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* QR Code Modal */}
-      {showQR && qrCode && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-              <div>
-                <div className="mt-3 text-center sm:mt-5">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Scan QR Code
-                  </h3>
-                  <div className="mt-4">
-                    <QRCode value={qrCode} size={256} />
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-500">
-                      Buka WhatsApp di ponsel Anda dan scan QR code ini
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                  onClick={() => setShowQR(false)}
-                >
-                  Tutup
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile sidebar overlay */}
-      {!isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
-          onClick={() => setIsSidebarOpen(true)}
-        />
-      )}
-
-      {/* Main content */}
-      <div className={`lg:pl-64 flex flex-col flex-1 min-h-screen`}>
-        {/* Mobile header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 lg:hidden">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-1 text-gray-500 rounded-md hover:bg-gray-100"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <h1 className="text-lg font-semibold text-gray-800">Admin Panel</h1>
-          <div className="w-6"></div> {/* Spacer for centering */}
-        </div>
-
-        {/* Page content */}
-        <main className="flex-1 p-4">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
-};
-
-export default AdminLayout;
+              className={`flex
